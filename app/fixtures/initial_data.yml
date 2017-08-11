@@ -1,0 +1,40 @@
+- model: app.author
+  fields: 
+    name: "S. Alcántara"
+- model: app.author
+  fields:
+    name: "F. Padula"
+- model: app.author
+  fields: 
+    name: "S. Skogestad"
+- model: app.author
+  fields:
+    name: "A. Visioli"
+- model: app.author
+  fields:
+    name: "R. Vilanova"
+- model: app.author
+  fields:
+    name: "C. Pedret"
+- model: app.article
+  pk: 1
+  fields:
+    title: "PID control in terms of robustness/performance and servo/regulator trade-offs: A unifying approach to balanced autotuning"
+    authors:
+      - "S. Alcántara"
+      - "R. Vilanova"
+      - "C. Pedret"
+- model: app.article
+  pk: 2
+  fields:
+    title: "H-infinity control of fractional linear systems"
+    authors:
+      - "F. Padula"
+      - "S. Alcántara"
+      - "A. Visioli"
+- model: app.article
+  pk: 3
+  fields:
+    title: "Simple analytic rules for model reduction and PID controller tuning"
+    authors:
+      - "S. Skogestad"
