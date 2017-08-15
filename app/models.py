@@ -1,11 +1,12 @@
 from django.db import models
 
+
 class Author(models.Model):
-    id = models.IntegerField(unique=True, null=True)
-    name = models.CharField(max_length=30, primary_key=True)
+    name = models.CharField(max_length=30, unique=True)
 
     def __unicode__(self):
         return self.name
+
 
 class Article(models.Model):
     title = models.CharField(max_length=140)
