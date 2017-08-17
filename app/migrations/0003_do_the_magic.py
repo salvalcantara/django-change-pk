@@ -41,29 +41,7 @@ def drop_constraints_and_indices_in_pivot_table():
         "ALTER TABLE %s DROP INDEX %s_id" % (pivot_table, related_model_name))
 
 
-def recreate_constraints_and_indices_in_pivot_table(apps, schema_editor):
-    cursor.execute(
-        "ALTER TABLE %s MODIFY %s_id INT(11) NOT NULL" %
-        (pivot_table, model_name))
-    cursor.execute(
-        "ALTER TABLE %s ADD INDEX %s (%s_id)" %
-        (pivot_table, index_name, model_name))
-
-    model_table = '%s_%s' % (app_name, model_name)
-    fk_postfix = '_fk_%s_%s_%s' % (app_name, model_name, pk_name)
-    new_fk_postfix = '_fk_%s_%s_%s' % (app_name, model_name, 'id')
-    new_fk_name = fk_name.replace(fk_postfix, new_fk_postfix)
-
-    cursor.execute(
-        "ALTER TABLE %s ADD CONSTRAINT "
-        "%s FOREIGN KEY (%s_id) REFERENCES %s (id)" %
-        (pivot_table, new_fk_name, model_name, model_table))
-    cursor.execute(
-        "ALTER TABLE %s ADD UNIQUE KEY %s_id (%s_id, %s_id)" %
-        (pivot_table, related_model_name, related_model_name, model_name))
-
-
-def do_the_magic(apps, schema_editor):
+def do_most_of_the_surgery(apps, schema_editor):
     models = {}
     Model = apps.get_model(app_name, model_name)
 
@@ -106,6 +84,32 @@ def do_the_magic(apps, schema_editor):
         (pivot_table, model_name))
 
 
+def recreate_constraints_and_indices_in_pivot_table():
+    cursor.execute(
+        "ALTER TABLE %s MODIFY %s_id INT(11) NOT NULL" %
+        (pivot_table, model_name))
+    cursor.execute(
+        "ALTER TABLE %s ADD INDEX %s (%s_id)" %
+        (pivot_table, index_name, model_name))
+
+    model_table = '%s_%s' % (app_name, model_name)
+    fk_postfix = '_fk_%s_%s_%s' % (app_name, model_name, pk_name)
+    new_fk_postfix = '_fk_%s_%s_%s' % (app_name, model_name, 'id')
+    new_fk_name = fk_name.replace(fk_postfix, new_fk_postfix)
+
+    cursor.execute(
+        "ALTER TABLE %s ADD CONSTRAINT "
+        "%s FOREIGN KEY (%s_id) REFERENCES %s (id)" %
+        (pivot_table, new_fk_name, model_name, model_table))
+    cursor.execute(
+        "ALTER TABLE %s ADD UNIQUE KEY %s_id (%s_id, %s_id)" %
+        (pivot_table, related_model_name, related_model_name, model_name))
+
+
+def do_the_final_lifting(apps, schema_editor):
+    recreate_constraints_and_indices_in_pivot_table()
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -119,7 +123,7 @@ class Migration(migrations.Migration):
             field=models.IntegerField(null=True),
             preserve_default=True,
         ),
-        migrations.RunPython(do_the_magic),
+        migrations.RunPython(do_most_of_the_surgery),
         migrations.AlterField(
             model_name=model_name,
             name='id',
@@ -134,5 +138,5 @@ class Migration(migrations.Migration):
             field=models.CharField(unique=True, max_length=30),
             preserve_default=True,
         ),
-        migrations.RunPython(recreate_constraints_and_indices_in_pivot_table),
+        migrations.RunPython(do_the_final_lifting),
     ]
