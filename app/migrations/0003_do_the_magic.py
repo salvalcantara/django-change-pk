@@ -19,7 +19,7 @@ cursor = connection.cursor()
 def drop_constraints_and_indices_in_pivot_table():
     global fk_name, index_name
 
-    fk_postfix = '%%fk_%s_%s_%s' % (app_name, model_name, pk_name)
+    fk_postfix = '%%_fk_%s_%s_%s' % (app_name, model_name, pk_name)
     cursor.execute(
         "SELECT constraint_name FROM information_schema.table_constraints "
         "WHERE table_name='%s' AND constraint_name LIKE "
@@ -48,11 +48,16 @@ def recreate_constraints_and_indices_in_pivot_table(apps, schema_editor):
     cursor.execute(
         "ALTER TABLE %s ADD INDEX %s (%s_id)" %
         (pivot_table, index_name, model_name))
+
     model_table = '%s_%s' % (app_name, model_name)
+    fk_postfix = '_fk_%s_%s_%s' % (app_name, model_name, pk_name)
+    new_fk_postfix = '_fk_%s_%s_%s' % (app_name, model_name, 'id')
+    new_fk_name = fk_name.replace(fk_postfix, new_fk_postfix)
+
     cursor.execute(
         "ALTER TABLE %s ADD CONSTRAINT "
         "%s FOREIGN KEY (%s_id) REFERENCES %s (id)" %
-        (pivot_table, fk_name, model_name, model_table))
+        (pivot_table, new_fk_name, model_name, model_table))
     cursor.execute(
         "ALTER TABLE %s ADD UNIQUE KEY %s_id (%s_id, %s_id)" %
         (pivot_table, related_model_name, related_model_name, model_name))
