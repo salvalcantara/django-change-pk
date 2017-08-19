@@ -24,6 +24,7 @@ pk_final_django_field = models.CharField(max_length=30, unique=True)
 
 # The other model being part of the many-to-many relationship
 related_model_name = 'article'
+related_model_owns_m2m = True  # Set to False if m2m rel. is defined in model
 
 # ------------------------------------------------------------------------------
 
@@ -34,7 +35,10 @@ app_name = dependencies[0][0]
 model_table = '%s_%s' % (app_name, model_name)
 
 # Pivot table global variables
-pivot_table = '%s_%s_%ss' % (app_name, related_model_name, model_name)
+if related_model_owns_m2m:
+    pivot_table = '%s_%s_%ss' % (app_name, related_model_name, model_name)
+else:
+    pivot_table = '%s_%s_%ss' % (app_name, model_name, related_model_name)
 fk_name, index_name = None, None
 
 # Global db cursor
