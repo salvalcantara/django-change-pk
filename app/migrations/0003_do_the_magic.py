@@ -141,20 +141,22 @@ def recreate_constraints_and_indices_in_pivot_table():
 
 
 def do_the_final_lifting(apps, schema_editor):
-    # Don't know why but this operation:
-    #
-    #     migrations.AlterField(
-    #         model_name=model_name,
-    #         name='id',
-    #         field=models.AutoField(
-    #             verbose_name='ID', serialize=False, auto_created=True,
-    #             primary_key=True),
-    #         preserve_default=True,
-    #     ),
-    #
-    # creates a unique key constraint in the database which is not needed since
-    # the id field is also marked as primary key. We do not want the redundant
-    # constraint so we will just drop it.
+    """
+    Don't know why but this operation:
+
+        migrations.AlterField(
+            model_name=model_name,
+            name='id',
+            field=models.AutoField(
+                verbose_name='ID', serialize=False, auto_created=True,
+                primary_key=True),
+            preserve_default=True,
+        ),
+
+    creates a unique key in the database which is not needed since the id
+    field is also marked as primary key. We do not want the redundant index,
+    so we will just drop it.
+    """
 
     # Get name of the redundant index
     cursor.execute(
