@@ -141,6 +141,27 @@ mysql> select * from app_article_authors;
 +----+------------+---------------+
 ```
 
+It is also worth to look at the create statements in the database:
+
+```
+CREATE TABLE `app_author` (
+  `name` varchar(30) NOT NULL,
+  PRIMARY KEY (`name`)
+)
+
+CREATE TABLE `app_article_authors` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `article_id` int(11) NOT NULL,
+  `author_id` varchar(30) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `article_id` (`article_id`,`author_id`),
+  KEY `app_article_authors_a00c1b00` (`article_id`),
+  KEY `app_article_authors_4f331e2f` (`author_id`),
+  CONSTRAINT `app_article_author_article_id_73a7f30a53e4084d_fk_app_article_id` FOREIGN KEY (`article_id`) REFERENCES `app_article` (`id`),
+  CONSTRAINT `app_article_author_author_id_51fe00e2ef6f9701_fk_app_author_name` FOREIGN KEY (`author_id`) REFERENCES `app_author` (`name`)
+)
+```
+
 ### Changing the PK column
 
 In an ideal world, we would just modify our `Author` class like this:
