@@ -10,7 +10,7 @@ Why would anyone want to mess up the database in the first place? Well, let's fa
 
 ## Prerequisites
 
-To run this project, you need to install the following system dependencies:
+To run this project, you need:
 * Python 2 (optionally you can install [pyenv](https://github.com/pyenv/pyenv-virtualenv) to manage different versions of python as well as your virtualenvs as shown later on)
 * MySQL
 
@@ -55,13 +55,12 @@ pip install -r requirements.txt
 > Django 1.7.3 is being used here. This is so because the present project was created to support a legacy application. 
 > It has not been tested with more recent versions, but the code would probably work just fine.
 
-Finally, it is necessary to run the migrations. Before that, make sure that you have installed MySQL locally according to the following settings (`change_pk/settings.py`):
+Finally, it is necessary to run the migrations. Before that, make sure that your local MySQL is accessible according to the following settings:
 
 ```python
 DATABASES = {                                                                    
-    'default': {                                                                 
-        'ENGINE': 'django.db.backends.mysql',                                    
-        'NAME': 'change_pk',                                                     
+    'default': {
+        # ...
         'USER': 'root',                                                          
         'PASSWORD': 'root',                                                      
         'HOST': '127.0.0.1',                                                     
@@ -70,7 +69,9 @@ DATABASES = {
 }
 ```
 
-Then, run the following command to create the required database first:
+Otherwise, please make the necessary adjustments either in your MySQL configuration or in the settings file `change_pk/settings.py`.
+
+Then, run the following command to create the application database (you might need to change the `-u` and `-p` flags if you are using a different username/password):
 
 ```
 mysql -u root -proot -e "CREATE DATABASE change_pk"
