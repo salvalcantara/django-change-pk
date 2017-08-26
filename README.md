@@ -141,14 +141,24 @@ mysql> select * from app_article_authors;
 +----+------------+---------------+
 ```
 
-It is also worth to look at the create statements in the database:
+It is also worth to look at the create statements in the database (`show create table table_name`):
 
-```
+```sql
 CREATE TABLE `app_author` (
   `name` varchar(30) NOT NULL,
   PRIMARY KEY (`name`)
 )
+```
 
+```sql
+CREATE TABLE `app_article` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(140) NOT NULL,
+  PRIMARY KEY (`id`)
+)
+```
+
+```sql
 CREATE TABLE `app_article_authors` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `article_id` int(11) NOT NULL,
@@ -241,7 +251,9 @@ CREATE TABLE `app_author` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `app_author_name_3458ba9aebc47455_uniq` (`name`)
 )
+```
 
+```sql
 CREATE TABLE `app_article_authors` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `article_id` int(11) NOT NULL,
