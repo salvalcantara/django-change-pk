@@ -84,7 +84,6 @@ def do_most_of_the_surgery(apps, schema_editor):
     drop_constraints_and_indices_in_pivot_table()
 
     # Drop current pk index and create the new one
-    model_table = '%s_%s' % (app_name, model_name)
     cursor.execute(
         "ALTER TABLE %s DROP PRIMARY KEY" % model_table
     )
